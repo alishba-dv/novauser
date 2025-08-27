@@ -4,7 +4,7 @@ defmodule ApiWeb.UserController do
   use PhoenixSwagger
 
   alias Data.Context.CreateUser
-
+  alias Data.Context.ViewUsers
 
 
 #  ===================================================
@@ -39,8 +39,8 @@ swagger_path :view_users do
 
   parameters do
 
-business(:query, :string, "Business Name",required: false, enum: ["Service","Tech","Product"])
-role(:query, :string, "Role Name", required: false, enum: ["User", "Admin"])
+business(:query, :string, "Business Name",required: false, enum: ["service","tech","product"])
+role(:query, :string, "Role Name", required: false, enum: ["user", "admin"])
 name(:query,:string, "Name",required: false)
 order :query, :string, "Order by Name in ASC or DESC", required: false, enum: ["Ascending","Descending"]
 email :query, :string, "Email of user", required: false
@@ -138,14 +138,19 @@ end
 
 
 
-      {:error, _changeset} ->
-        conn
-        |> put_status(:error)
-        |> render(:usercreated,
+      {:error, changeset} ->
+      error=
+        Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
+          Enum.reduce(opts, msg, fn {key, value}, acc ->
+            String.replace(acc, "%{#{key}}", to_string(value))
+          end)
+        end)
+
+      json(conn,
 
              %{
                status: :error,
-               message: "error"
+               message: error
 
 
              })
@@ -159,6 +164,25 @@ end
 
 
 def view_users(conn,params) do
+
+
+    name=  params["name"]
+    email=  params["email"]
+    role=  (params["role"])
+    order=  params["order"]
+    business=  params["business"]
+
+
+    users=ViewUsers.viewusers(name,email,order,business,role)
+
+    case users do
+      []-> conn
+      |>put_status(400)
+      |>render(:viewusers,%{status: "Error", message: "No user found with given filters",
+      error: []})
+      _-> conn |> render(:viewusers, %{users: users})
+    end
+
 
 
 end

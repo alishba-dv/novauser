@@ -2,6 +2,7 @@ defmodule Data.Schema.Business do
   use Ecto.Schema
   import Ecto.Changeset
 
+
   schema "businesses" do
     field :name, :string
     field :address, :string
@@ -15,5 +16,6 @@ defmodule Data.Schema.Business do
     business
     |> cast(attrs, [:name, :address, :email])
     |> validate_required([:name, :address, :email])
+    |>unique_constraint(:email,message: "Email must be unique")
   end
 end

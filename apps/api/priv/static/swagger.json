@@ -28,9 +28,9 @@
             "name": "business",
             "in": "query",
             "enum": [
-              "Service",
-              "Tech",
-              "Product"
+              "service",
+              "tech",
+              "product"
             ],
             "description": "Business Name"
           },
@@ -40,8 +40,8 @@
             "name": "role",
             "in": "query",
             "enum": [
-              "User",
-              "Admin"
+              "user",
+              "admin"
             ],
             "description": "Role Name"
           },
@@ -119,7 +119,7 @@
   },
   "info": {
     "version": "0.0.1",
-    "title": "<enter your title>"
+    "title": "NovaUser"
   },
   "host": "localhost:4000",
   "definitions": {

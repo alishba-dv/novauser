@@ -2,7 +2,7 @@ defmodule Data.Repo.Migrations.CreateRoles do
   use Ecto.Migration
 
   def change do
-    create table(:roles) do
+    create_if_not_exists table(:roles) do
       add :name, :string
       add :description, :string
 

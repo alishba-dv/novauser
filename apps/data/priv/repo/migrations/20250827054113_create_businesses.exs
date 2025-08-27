@@ -2,7 +2,7 @@ defmodule Data.Repo.Migrations.CreateBusinesses do
   use Ecto.Migration
 
   def change do
-    create table(:businesses) do
+    create_if_not_exists table(:businesses) do
       add :name, :string
       add :address, :string
       add :email, :string
