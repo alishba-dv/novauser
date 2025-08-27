@@ -57,7 +57,7 @@ Swagger based backend endpoint app for implementation of APIs for user data. It 
  
 
 
-Here is attached the run time look and feel of project::
+**~~~~~~~~~~~~~~~~~~~~Here is attached the run time look and feel of project::**~~~~~~~~~~~~~~~~~~~~
 
 
 

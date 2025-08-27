@@ -25,6 +25,18 @@ defmodule ApiWeb.UserJSON do
   end
 
 
+  def getroles(%{roles: roles}) do
+    %{
+      status: :ok,
+      roles: Enum.map(roles, fn u ->
+        u
+        |> Map.from_struct()
+        |> Map.take([:id, :name, :description])
+      end)
+    }
+  end
+
+
   def viewusers((%{users: %{error: message}})) do
     %{message: message}
   end

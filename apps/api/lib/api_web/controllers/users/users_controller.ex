@@ -6,7 +6,7 @@ defmodule ApiWeb.UserController do
   alias Data.Context.CreateUser
   alias Data.Context.ViewUsers
  alias Data.Context.DeleteUser
-
+  alias Data.Context.GetRoles
 #  ===================================================
 
 swagger_path :create_user do
@@ -45,6 +45,7 @@ name(:query,:string, "Name",required: false)
 order :query, :string, "Order by Name in ASC or DESC", required: false, enum: ["Ascending","Descending"]
 email :query, :string, "Email of user", required: false
 page_size :query, :string, "Number of entries in a page", required: false
+page :query, :string, "Page number to show ", required: false
 
 
   end
@@ -58,7 +59,7 @@ swagger_path :delete_user do
 
   delete("/api/user/{id}")
   summary("Delete a user by its id")
-  description("A user with dedeicated id will be deleted")
+  description("A user with dedicated id will be deleted")
   produces "application/json"
   consumes "application/json"
 #
@@ -69,6 +70,23 @@ swagger_path :delete_user do
         response 200, "Success", Schema.ref(:deleteuser)
         response 404, "Bad request"
 end
+
+
+swagger_path :get_roles do
+
+  get("/api/roles")
+  summary("Get a list of all roles enrolled")
+  description("All roles available will be shown")
+  produces "application/json"
+  consumes "application/json"
+
+
+  response 200, "success",Schema.ref(:viewroles)
+  response 404, "Bad Request"
+
+
+
+  end
 def swagger_definitions do
 
 
@@ -85,10 +103,13 @@ def swagger_definitions do
       password :string, "Password", required: true
       business :string, "Business", required: true
       role :string, "Role", required: true
-      page_size :string, "Page Size", required: false
+       page_size :string, "Page Size", required: false
+       page :string, "Page", required: false
 
 
     end
+
+
 
     example %{
 
@@ -101,6 +122,22 @@ def swagger_definitions do
 
 
     }
+  end,
+
+  viewroles: swagger_schema do
+    title "roles"
+    description "All roles"
+    properties do
+      name :string, "name", required: true
+      description :string, "Description", required: true
+    end
+
+    example%{
+    name: "User",
+    description: "THis is user role"
+    }
+
+
   end,
 
 
@@ -191,6 +228,19 @@ end
 end
 
 
+def get_roles(conn,params) do
+
+
+  case GetRoles.getroles() do
+
+
+    {:ok,roles} -> conn |> put_status(200) |> render(:getroles, %{message: "All roles fetched successfully",roles: roles})
+    {:error,changeset} -> json(conn,%{message: "Error fetching roles", error: changeset.errors})
+    end
+
+
+end
+
 def view_users(conn,params) do
 
 
@@ -205,8 +255,13 @@ def view_users(conn,params) do
       |> to_string()
       |> String.to_integer()
 
+      page=
+      Map.get(params, "page", "1")
+      |> to_string()
+      |> String.to_integer()
+
 #
-    result=ViewUsers.viewusers(name,email,order,business,role,page_size)
+    result=ViewUsers.viewusers(name,email,order,business,role,page_size,page)
 #
     case result do
       []-> conn

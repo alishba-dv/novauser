@@ -40,6 +40,7 @@ defmodule ApiWeb.Router do
    post "/user", ApiWeb.UserController, :create_user
    get "/users", ApiWeb.UserController, :view_users
    delete "/user/:id",ApiWeb.UserController, :delete_user
+   get "/roles",ApiWeb.UserController, :get_roles
   end
 
 

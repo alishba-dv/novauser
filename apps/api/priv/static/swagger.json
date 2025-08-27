@@ -76,6 +76,13 @@
             "name": "page_size",
             "in": "query",
             "description": "Number of entries in a page"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "page",
+            "in": "query",
+            "description": "Page number to show "
           }
         ],
         "operationId": "ApiWeb.UserController.view_users",
@@ -158,6 +165,34 @@
           "application/json"
         ]
       }
+    },
+    "/api/roles": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get a list of all roles enrolled",
+        "responses": {
+          "404": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/viewroles"
+            },
+            "description": "success"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "operationId": "ApiWeb.UserController.get_roles",
+        "description": "All roles available will be shown",
+        "consumes": [
+          "application/json"
+        ]
+      }
     }
   },
   "info": {
@@ -200,11 +235,33 @@
       },
       "description": "A user"
     },
+    "viewroles": {
+      "type": "object",
+      "title": "roles",
+      "required": [
+        "description",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description"
+        }
+      },
+      "example": {
+        "name": "User",
+        "description": "THis is user role"
+      },
+      "description": "All roles"
+    },
     "user": {
       "type": "object",
       "title": "User",
       "required": [
-        "page_size",
         "role",
         "business",
         "password",
@@ -223,6 +280,10 @@
         "page_size": {
           "type": "string",
           "description": "Page Size"
+        },
+        "page": {
+          "type": "string",
+          "description": "Page"
         },
         "name": {
           "type": "string",

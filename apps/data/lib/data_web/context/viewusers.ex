@@ -8,7 +8,7 @@ defmodule Data.Context.ViewUsers do
   use Scrivener, page_size: 5
 
 
-  def viewusers(name \\nil, email \\nil, order \\nil, business \\nil, role \\nil ,page_size \\ nil) do
+  def viewusers(name \\nil, email \\nil, order \\nil, business \\nil, role \\nil ,page_size \\ nil,page \\nil) do
 
     filter=
       dynamic([u],true)
@@ -56,7 +56,7 @@ end
 #
 #  %{users: users}
 #end
-    Repo.paginate(query, page: 1, page_size: page_size)
+    Repo.paginate(query, page: page, page_size: page_size)
 
   end
 end
