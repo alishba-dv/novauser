@@ -7,6 +7,7 @@ defmodule ApiWeb.UserController do
   alias Data.Context.ViewUsers
  alias Data.Context.DeleteUser
   alias Data.Context.GetRoles
+  alias Data.Context.GetBusiness
 #  ===================================================
 
 swagger_path :create_user do
@@ -87,6 +88,21 @@ swagger_path :get_roles do
 
 
   end
+  swagger_path :get_business do
+
+    get("/api/business")
+    summary("Get a list of all businesses enrolled")
+    description("All businesses available will be shown")
+    produces "application/json"
+    consumes "application/json"
+
+
+    response 200, "success",Schema.ref(:viewbusiness)
+    response 404, "Bad Request"
+
+
+
+  end
 def swagger_definitions do
 
 
@@ -124,24 +140,42 @@ def swagger_definitions do
     }
   end,
 
-  viewroles: swagger_schema do
-    title "roles"
-    description "All roles"
-    properties do
-      name :string, "name", required: true
-      description :string, "Description", required: true
-    end
+    viewroles: swagger_schema do
+      title "roles"
+      description "All roles"
+      properties do
+        name :string, "name", required: true
+        description :string, "Description", required: true
+      end
 
-    example%{
-    name: "User",
-    description: "THis is user role"
-    }
-
-
-  end,
+      example%{
+        name: "User",
+        description: "THis is user role"
+      }
 
 
-viewusers: swagger_schema do
+    end,
+
+    viewbusiness: swagger_schema do
+      title "Business"
+      description "All Businesses"
+      properties do
+        name :string, "name", required: true
+        email :string, "Email", required: true
+        address :string, "Address",required: true
+      end
+
+#      example%{
+#        name: "User",
+#        email: "example@gmail.com"
+#        address: "st#123 abc "
+#      }
+
+
+    end,
+
+
+    viewusers: swagger_schema do
     title "User"
     description "A user"
 
@@ -228,7 +262,7 @@ end
 end
 
 
-def get_roles(conn,params) do
+def get_roles(conn,_params) do
 
 
   case GetRoles.getroles() do
@@ -240,6 +274,20 @@ def get_roles(conn,params) do
 
 
 end
+
+def get_business(conn,params) do
+
+
+  case GetBusiness.getbusiness() do
+
+
+    {:ok,business} -> conn |> put_status(200) |> render(:getbusiness, %{message: "All businesses fetched successfully",business: business})
+    {:error,changeset} -> json(conn,%{message: "Error fetching roles", error: changeset.errors})
+    end
+
+
+end
+
 
 def view_users(conn,params) do
 

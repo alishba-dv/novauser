@@ -36,6 +36,17 @@ defmodule ApiWeb.UserJSON do
     }
   end
 
+  def getbusiness(%{business: business}) do
+    %{
+      status: :ok,
+      roles: Enum.map(business, fn u ->
+        u
+        |> Map.from_struct()
+        |> Map.take([:id, :name, :address, :email])
+      end)
+    }
+  end
+
 
   def viewusers((%{users: %{error: message}})) do
     %{message: message}

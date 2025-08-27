@@ -41,6 +41,7 @@ defmodule ApiWeb.Router do
    get "/users", ApiWeb.UserController, :view_users
    delete "/user/:id",ApiWeb.UserController, :delete_user
    get "/roles",ApiWeb.UserController, :get_roles
+   get "/business", ApiWeb.UserController, :get_business
   end
 
 

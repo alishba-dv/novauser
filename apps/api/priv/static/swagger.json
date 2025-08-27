@@ -122,7 +122,7 @@
           }
         ],
         "operationId": "ApiWeb.UserController.delete_user",
-        "description": "A user with dedeicated id will be deleted",
+        "description": "A user with dedicated id will be deleted",
         "consumes": [
           "application/json"
         ]
@@ -193,6 +193,34 @@
           "application/json"
         ]
       }
+    },
+    "/api/business": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get a list of all businesses enrolled",
+        "responses": {
+          "404": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/viewbusiness"
+            },
+            "description": "success"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "operationId": "ApiWeb.UserController.get_business",
+        "description": "All businesses available will be shown",
+        "consumes": [
+          "application/json"
+        ]
+      }
     }
   },
   "info": {
@@ -257,6 +285,30 @@
         "description": "THis is user role"
       },
       "description": "All roles"
+    },
+    "viewbusiness": {
+      "type": "object",
+      "title": "Business",
+      "required": [
+        "address",
+        "email",
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "name"
+        },
+        "email": {
+          "type": "string",
+          "description": "Email"
+        },
+        "address": {
+          "type": "string",
+          "description": "Address"
+        }
+      },
+      "description": "All Businesses"
     },
     "user": {
       "type": "object",
