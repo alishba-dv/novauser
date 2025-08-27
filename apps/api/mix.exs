@@ -70,8 +70,11 @@ defmodule Api.MixProject do
       {:data, in_umbrella: true},
      {:phoenix_swagger, "~> 0.8.3"}, # swagger generator + macros
     {:ex_json_schema, "~> 0.7.1"},   # json schema support (used by phoenix_swagger)
-    {:poison, "~> 2.2"}             # optional: if you prefer Poison as JSON lib
-    ]
+    {:poison, "~> 2.2"} ,            # optional: if you prefer Poison as JSON lib
+#                                    {:phoenix_pagination, "~> 0.7.0"}
+      {:scrivener_ecto, "~> 2.7"}
+
+                                                                      ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

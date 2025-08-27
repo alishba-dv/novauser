@@ -8,18 +8,22 @@ defmodule ApiWeb.UserJSON do
     }
   end
 
-  def viewusers(%{users: %{users: users}}) when is_list(users) do
+  def viewusers(%{users: %Scrivener.Page{} = page}) do
     %{
       status: "Success",
       message: "Fetched users successfully",
-      users: Enum.map(users, fn u ->
-        u
-        |> Map.from_struct()
-        |> Map.take([:name, :email, :role,:business])
-      end)
-
+      users: Enum.map(page.entries, fn u ->
+                                       u
+#                                       |> Map.from_struct()
+                                       |> Map.take([:id, :name, :email, :role, :business_name,:business_address, :business_email])
+      end),
+      page_number: page.page_number,
+      page_size: page.page_size,
+      total_pages: page.total_pages,
+      total_entries: page.total_entries
     }
   end
+
 
   def viewusers((%{users: %{error: message}})) do
     %{message: message}

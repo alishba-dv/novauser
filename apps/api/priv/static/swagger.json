@@ -69,10 +69,53 @@
             "name": "email",
             "in": "query",
             "description": "Email of user"
+          },
+          {
+            "type": "string",
+            "required": false,
+            "name": "page_size",
+            "in": "query",
+            "description": "Number of entries in a page"
           }
         ],
         "operationId": "ApiWeb.UserController.view_users",
         "description": "A list of users is shown",
+        "consumes": [
+          "application/json"
+        ]
+      }
+    },
+    "/api/user/{id}": {
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Delete a user by its id",
+        "responses": {
+          "404": {
+            "description": "Bad request"
+          },
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/deleteuser"
+            },
+            "description": "Success"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "integer",
+            "required": true,
+            "name": "id",
+            "in": "path",
+            "description": "User ID"
+          }
+        ],
+        "operationId": "ApiWeb.UserController.delete_user",
+        "description": "A user with dedeicated id will be deleted",
         "consumes": [
           "application/json"
         ]
@@ -119,7 +162,7 @@
   },
   "info": {
     "version": "0.0.1",
-    "title": "NovaUser"
+    "title": "<enter your title>"
   },
   "host": "localhost:4000",
   "definitions": {
@@ -161,6 +204,7 @@
       "type": "object",
       "title": "User",
       "required": [
+        "page_size",
         "role",
         "business",
         "password",
@@ -175,6 +219,10 @@
         "password": {
           "type": "string",
           "description": "Password"
+        },
+        "page_size": {
+          "type": "string",
+          "description": "Page Size"
         },
         "name": {
           "type": "string",
@@ -197,6 +245,23 @@
         "business": "service"
       },
       "description": " A user record"
+    },
+    "deleteuser": {
+      "type": "object",
+      "title": "User",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "id"
+        }
+      },
+      "example": {
+        "id": 1
+      },
+      "description": "Delete a user by id"
     }
   }
 }

@@ -5,7 +5,7 @@ defmodule ApiWeb.UserController do
 
   alias Data.Context.CreateUser
   alias Data.Context.ViewUsers
-
+ alias Data.Context.DeleteUser
 
 #  ===================================================
 
@@ -44,6 +44,7 @@ role(:query, :string, "Role Name", required: false, enum: ["user", "admin"])
 name(:query,:string, "Name",required: false)
 order :query, :string, "Order by Name in ASC or DESC", required: false, enum: ["Ascending","Descending"]
 email :query, :string, "Email of user", required: false
+page_size :query, :string, "Number of entries in a page", required: false
 
 
   end
@@ -53,7 +54,21 @@ email :query, :string, "Email of user", required: false
 
 end
 
+swagger_path :delete_user do
 
+  delete("/api/user/{id}")
+  summary("Delete a user by its id")
+  description("A user with dedeicated id will be deleted")
+  produces "application/json"
+  consumes "application/json"
+#
+  parameters do
+          id :path, :integer, "User ID", required: true
+        end
+
+        response 200, "Success", Schema.ref(:deleteuser)
+        response 404, "Bad request"
+end
 def swagger_definitions do
 
 
@@ -70,7 +85,7 @@ def swagger_definitions do
       password :string, "Password", required: true
       business :string, "Business", required: true
       role :string, "Role", required: true
-
+      page_size :string, "Page Size", required: false
 
 
     end
@@ -106,7 +121,20 @@ viewusers: swagger_schema do
       business: "service",
       role: "user"
     }
-  end
+  end,
+
+  deleteuser: swagger_schema do
+
+    title "User"
+    description "Delete a user by id"
+    properties do
+      id :integer, "id", required: true
+    end
+
+    example %{
+    id: 1,
+    }
+    end
 
 
 
@@ -172,18 +200,60 @@ def view_users(conn,params) do
     order=  params["order"]
     business=  params["business"]
 
+    page_size =
+      Map.get(params, "page_size", "10")
+      |> to_string()
+      |> String.to_integer()
 
-    users=ViewUsers.viewusers(name,email,order,business,role)
-
-    case users do
+#
+    result=ViewUsers.viewusers(name,email,order,business,role,page_size)
+#
+    case result do
       []-> conn
       |>put_status(400)
       |>render(:viewusers,%{status: "Error", message: "No user found with given filters",
       error: []})
-      _-> conn |> render(:viewusers, %{users: users})
+      _-> conn |> render(:viewusers, %{users: result})
+
     end
 
+#    conn
+#    |> put_status(:ok)
+#    |> json(%{
+#      users: result.entries,
+#      page_number: result.page_number,
+#      page_size: result.page_size,
+#      total_pages: result.total_pages,
+#      total_entries: result.total_entries
+#    })
 
 
+end
+
+
+def delete_user(conn,%{"id"=>sid}) do
+
+
+    id = String.to_integer(sid)
+
+
+    case DeleteUser.deleteUser(id) do
+
+   {:ok, :deleted} ->
+     conn
+     |> put_status(:ok)
+     |> json(%{message: "User deleted successfully"})
+
+   {:error, :not_found} ->
+     conn
+     |> put_status(:not_found)
+     |> json(%{error: "User not found"})
+
+   {:error, :failed} ->
+     conn
+     |> put_status(:internal_server_error)
+     |> json(%{error: "Failed to delete user"})
+
+ end
 end
 end
