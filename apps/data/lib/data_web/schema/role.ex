@@ -4,7 +4,9 @@ defmodule Data.Schema.Role do
 
   schema "roles" do
     field :name, :string
-    field :description, :string
+    #    field :description, :string
+
+    many_to_many :users, Data.Schema.User, join_through: "user_roles", on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end
@@ -12,7 +14,8 @@ defmodule Data.Schema.Role do
   @doc false
   def changeset(role, attrs) do
     role
-    |> cast(attrs, [:name, :description])
-    |> validate_required([:name, :description])
+    |> cast(attrs, [:name ])
+    |> validate_required([:name])
+    |>unique_constraint(:name)
   end
 end

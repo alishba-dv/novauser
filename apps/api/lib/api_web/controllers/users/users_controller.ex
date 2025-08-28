@@ -8,6 +8,9 @@ defmodule ApiWeb.UserController do
  alias Data.Context.DeleteUser
   alias Data.Context.GetRoles
   alias Data.Context.GetBusiness
+
+
+
 #  ===================================================
 
 swagger_path :create_user do
@@ -40,8 +43,8 @@ swagger_path :view_users do
 
   parameters do
 
-business(:query, :string, "Business Name",required: false, enum: ["service","tech","product"])
-role(:query, :string, "Role Name", required: false, enum: ["user", "admin"])
+business(:query, :string, "Business Name",required: false, enum: ["1","2","3"])
+role(:query, :string, "Role Name", required: false, enum: ["1", "2"])
 name(:query,:string, "Name",required: false)
 order :query, :string, "Order by Name in ASC or DESC", required: false, enum: ["Ascending","Descending"]
 email :query, :string, "Email of user", required: false
@@ -117,8 +120,8 @@ def swagger_definitions do
        email :string, "Email", required: true
       name :string,  "Name", required: true
       password :string, "Password", required: true
-      business :string, "Business", required: true
-      role :string, "Role", required: true
+      businesses_id :integer, "Business ID", required: true
+      roles_id :integer, "Role ID", required: true
        page_size :string, "Page Size", required: false
        page :string, "Page", required: false
 
@@ -132,8 +135,8 @@ def swagger_definitions do
     email: "Example@gmail.com",
     name: "Example",
     password: "password123",
-    business: "service",
-    role: "user"
+    businesses_id: [1],
+    roles_id: [1]
 
 
 
@@ -145,12 +148,12 @@ def swagger_definitions do
       description "All roles"
       properties do
         name :string, "name", required: true
-        description :string, "Description", required: true
+#        description :string, "Description", required: true
       end
 
       example%{
         name: "User",
-        description: "THis is user role"
+#        description: "THis is user role"
       }
 
 
@@ -161,15 +164,15 @@ def swagger_definitions do
       description "All Businesses"
       properties do
         name :string, "name", required: true
-        email :string, "Email", required: true
-        address :string, "Address",required: true
+#        email :string, "Email", required: true
+#        address :string, "Address",required: true
       end
 
-#      example%{
-#        name: "User",
-#        email: "example@gmail.com"
+      example%{
+        name: "User",
+#        email: "example@gmail.com",
 #        address: "st#123 abc "
-#      }
+      }
 
 
     end,
@@ -189,8 +192,8 @@ def swagger_definitions do
     example %{
       email: "example@gmail.com",
       name: "example",
-      business: "service",
-      role: "user"
+      business_name: "service",
+      role_name: "user"
     }
   end,
 
@@ -294,9 +297,9 @@ def view_users(conn,params) do
 
     name=  params["name"]
     email=  params["email"]
-    role=  (params["role"])
+    roles_id=  (params["roles_id"])
     order=  params["order"]
-    business=  params["business"]
+    businesses_id=  params["businesses_id"]
 
     page_size =
       Map.get(params, "page_size", "10")
@@ -308,10 +311,11 @@ def view_users(conn,params) do
       |> to_string()
       |> String.to_integer()
 
-#
-    result=ViewUsers.viewusers(name,email,order,business,role,page_size,page)
-#
+
+    result=ViewUsers.viewusers(name,email,order,businesses_id,roles_id,page_size,page)
+
     case result do
+
       []-> conn
       |>put_status(400)
       |>render(:viewusers,%{status: "Error", message: "No user found with given filters",
@@ -319,6 +323,7 @@ def view_users(conn,params) do
       _-> conn |> render(:viewusers, %{users: result})
 
     end
+
 
 #    conn
 #    |> put_status(:ok)
@@ -347,7 +352,7 @@ def delete_user(conn,%{"id"=>sid}) do
      |> put_status(:ok)
      |> json(%{message: "User deleted successfully"})
 
-   {:error, :not_found} ->
+   {:error, :changeset} ->
      conn
      |> put_status(:not_found)
      |> json(%{error: "User not found"})

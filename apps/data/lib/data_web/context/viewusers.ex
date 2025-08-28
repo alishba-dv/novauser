@@ -8,7 +8,7 @@ defmodule Data.Context.ViewUsers do
   use Scrivener, page_size: 5
 
 
-  def viewusers(name \\nil, email \\nil, order \\nil, business \\nil, role \\nil ,page_size \\ nil,page \\nil) do
+  def viewusers(name \\nil, email \\nil, order \\nil, businesses_id \\nil, roles_id \\nil ,page_size \\ nil,page \\nil) do
 
     filter=
       dynamic([u],true)
@@ -18,26 +18,27 @@ defmodule Data.Context.ViewUsers do
     filter = if email, do: dynamic([u], ^filter and u.email == ^ email), else: filter
 #
 #
-    filter = if business, do: dynamic([u], ^filter and u.business == ^ business),else: filter
-    filter = if role, do: dynamic([u], ^filter and u. role == ^role),else: filter
+    filter = if businesses_id, do: dynamic([u], ^filter and u.businesses_id == ^ businesses_id),else: filter
+    filter = if roles_id, do: dynamic([u], ^filter and u. roles_id == ^roles_id),else: filter
 
 
-    query= from u in User, where: ^filter,
-                           join: r in Role, on: u.role == r.name,
-                           join: b in Business, on: u.business == b.name,
-                           select: %{
-                             id: u.id,
-                             name: u.name,
-                             email: u.email,
-                             role: r.name,
-                             role_description: r.description,
-                             business_name: b.name,
-                            business_address: b.address,
-                           business_email: b.email
-                           }
-#
+    query =
+      from u in User,
+           where: ^filter,
+           join: ur in "user_roles", on: ur.user_id == u.id,
+           join: r in Role, on: ur.role_id == r.id,
+           join: ub in "user_businesses", on: ub.user_id == u.id,
+           join: b in Business, on: ub.business_id == b.id,
+           select: %{
+             id: u.id,
+             name: u.name,
+             email: u.email,
+             role_name: r.name,
+             business_name: b.name
+           }
 
-query=
+
+    query=
 case order do
   "Ascending" -> from u in query, order_by: [asc: u.name]
   "Descending" -> from u in query, order_by: [desc: u.name]

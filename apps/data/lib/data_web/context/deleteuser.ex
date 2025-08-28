@@ -7,13 +7,13 @@ defmodule Data.Context.DeleteUser do
 
   def deleteUser(id) do
 
-   query= from(u in User, where: u.id==^id)
+   user= Repo.get!(User,id)
 
-  case  Repo.delete_all(query) do
+  case  Repo.delete(user) do
 
-               {0,_} ->  {:error,:not_found}
+               {:error,changeset} ->  {:error,:not_found}
 
-               {1,_} -> {:ok,:deleted}
+               {:ok,_user} -> {:ok,:deleted}
 
               _ -> {:error,:failed}
   end

@@ -28,9 +28,9 @@
             "name": "business",
             "in": "query",
             "enum": [
-              "service",
-              "tech",
-              "product"
+              "1",
+              "2",
+              "3"
             ],
             "description": "Business Name"
           },
@@ -40,8 +40,8 @@
             "name": "role",
             "in": "query",
             "enum": [
-              "user",
-              "admin"
+              "1",
+              "2"
             ],
             "description": "Role Name"
           },
@@ -256,10 +256,10 @@
         }
       },
       "example": {
-        "role": "user",
+        "role_name": "user",
         "name": "example",
         "email": "example@gmail.com",
-        "business": "service"
+        "business_name": "service"
       },
       "description": "A user"
     },
@@ -267,22 +267,16 @@
       "type": "object",
       "title": "roles",
       "required": [
-        "description",
         "name"
       ],
       "properties": {
         "name": {
           "type": "string",
           "description": "name"
-        },
-        "description": {
-          "type": "string",
-          "description": "Description"
         }
       },
       "example": {
-        "name": "User",
-        "description": "THis is user role"
+        "name": "User"
       },
       "description": "All roles"
     },
@@ -290,23 +284,16 @@
       "type": "object",
       "title": "Business",
       "required": [
-        "address",
-        "email",
         "name"
       ],
       "properties": {
         "name": {
           "type": "string",
           "description": "name"
-        },
-        "email": {
-          "type": "string",
-          "description": "Email"
-        },
-        "address": {
-          "type": "string",
-          "description": "Address"
         }
+      },
+      "example": {
+        "name": "User"
       },
       "description": "All Businesses"
     },
@@ -314,16 +301,16 @@
       "type": "object",
       "title": "User",
       "required": [
-        "role",
-        "business",
+        "roles_id",
+        "businesses_id",
         "password",
         "name",
         "email"
       ],
       "properties": {
-        "role": {
-          "type": "string",
-          "description": "Role"
+        "roles_id": {
+          "type": "integer",
+          "description": "Role ID"
         },
         "password": {
           "type": "string",
@@ -345,17 +332,21 @@
           "type": "string",
           "description": "Email"
         },
-        "business": {
-          "type": "string",
-          "description": "Business"
+        "businesses_id": {
+          "type": "integer",
+          "description": "Business ID"
         }
       },
       "example": {
-        "role": "user",
+        "roles_id": [
+          1
+        ],
         "password": "password123",
         "name": "Example",
         "email": "Example@gmail.com",
-        "business": "service"
+        "businesses_id": [
+          1
+        ]
       },
       "description": " A user record"
     },

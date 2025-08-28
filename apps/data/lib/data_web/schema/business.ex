@@ -5,17 +5,17 @@ defmodule Data.Schema.Business do
 
   schema "businesses" do
     field :name, :string
-    field :address, :string
-    field :email, :string
+#    field :address, :string
+#    field :email, :string
+
+    many_to_many :user, Data.Schema.User,join_through: "user_businesses", on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end
-
-  @doc false
   def changeset(business, attrs) do
     business
-    |> cast(attrs, [:name, :address, :email])
-    |> validate_required([:name, :address, :email])
-    |>unique_constraint(:email,message: "Email must be unique")
+    |> cast(attrs, [:name])
+    |> validate_required([:name])
+    |>unique_constraint(:name,message: "name must be unique")
   end
 end
