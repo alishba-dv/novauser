@@ -55,7 +55,11 @@ defmodule Data.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
-      {:scrivener_ecto, "~> 2.7"}
+      {:scrivener_ecto, "~> 2.7"},
+      {:guardian, "~> 2.0"},
+#      {:plug_cowboy, "~> 2.0"}
+#      {:plug_cowboy, "~> 2.0"}
+
     ]
   end
 

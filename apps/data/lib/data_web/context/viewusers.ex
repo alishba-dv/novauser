@@ -14,10 +14,10 @@ defmodule Data.Context.ViewUsers do
       dynamic([u],true)
 
     filter = if name, do:  dynamic([u], ^filter and  u.name == ^ name ), else: filter
-#
+
     filter = if email, do: dynamic([u], ^filter and u.email == ^ email), else: filter
-#
-#
+
+
     filter = if businesses_id, do: dynamic([u], ^filter and u.businesses_id == ^ businesses_id),else: filter
     filter = if roles_id, do: dynamic([u], ^filter and u. roles_id == ^roles_id),else: filter
 
@@ -46,15 +46,15 @@ case order do
 end
 
 
-#
+
 #users=Repo.all(query)
-#
-#
-##
+
+
+
 #if users==[] do
 #  %{error: "No user found with given filters"}
 #  else
-#
+
 #  %{users: users}
 #end
     Repo.paginate(query, page: page, page_size: page_size)
