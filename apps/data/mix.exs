@@ -57,8 +57,7 @@ defmodule Data.MixProject do
       {:bandit, "~> 1.5"},
       {:scrivener_ecto, "~> 2.7"},
       {:guardian, "~> 2.0"},
-#      {:plug_cowboy, "~> 2.0"}
-#      {:plug_cowboy, "~> 2.0"}
+      {:bcrypt_elixir, "~> 3.0"},     # for password hashing/verification
 
     ]
   end

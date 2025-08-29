@@ -59,6 +59,12 @@ config :phoenix, :json_library, Jason
 # of this file so it overrides the configuration defined above.
 #import_config "#{config_env()}.exs"
 
+
+config :api, Api.Auth.Guardian,
+       issuer: "api",
+       secret_key: "fTe8ti7Nk9J7lSTo5NHO2dn-OUoKhIlbvB63GIbh4enM_eJb2kqEU64bizIFTFvl"  # generate using `mix guardian.gen.secret`
+
+
 config :api,
   generators: [timestamp_type: :utc_datetime]
 

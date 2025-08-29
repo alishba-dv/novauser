@@ -8,10 +8,29 @@ defmodule ApiWeb.UserController do
  alias Data.Context.DeleteUser
   alias Data.Context.GetRoles
   alias Data.Context.GetBusiness
+  alias Api.Auth.Guardian
 
 
 
 #  ===================================================
+  swagger_path :login do
+
+
+    post("/api/login")
+
+    summary("Logs in a user")
+    description("A  user is logged in")
+    produces "application/json"
+    consumes "application/json"
+
+
+    parameters do
+      user :body, Schema.ref(:login), "User logged in  successfully",required: true
+    end
+
+    response 200, "Success", Schema.ref(:login)
+    response 400, "Bad request"
+  end
 
 swagger_path :create_user do
 
@@ -34,6 +53,7 @@ end
 
 swagger_path :view_users do
 
+    security [%{Bearer: []}]
 
   get("/api/users")
   summary("View list of users ")
@@ -110,33 +130,46 @@ def swagger_definitions do
 
 
   %{
+Bearer: %{
+type: :http,
+scheme: :bearer,
+bearerFormat: "JWT"
+               },
+    user: swagger_schema do
 
-  user: swagger_schema do
+      title  "User"
+      description " A user record"
+      properties do
 
-    title  "User"
-    description " A user record"
-    properties do
+        email :string, "Email", required: true
+        name :string,  "Name", required: true
+        password :string, "Password", required: true
+        businesses_id :integer, "Business ID", required: true
+        roles_id :integer, "Role ID", required: true
+        page_size :string, "Page Size", required: false
+        page :string, "Page", required: false
+end
 
-       email :string, "Email", required: true
-      name :string,  "Name", required: true
-      password :string, "Password", required: true
-      businesses_id :integer, "Business ID", required: true
-      roles_id :integer, "Role ID", required: true
-       page_size :string, "Page Size", required: false
-       page :string, "Page", required: false
+      end,
+
+login: swagger_schema do
+
+title  "Login User"
+description " A user logs in "
+properties do
+
+email :string, "Email", required: true
+password :string, "Password", required: true
 
 
-    end
+end
 
 
-
-    example %{
+example %{
 
     email: "Example@gmail.com",
-    name: "Example",
     password: "password123",
-    businesses_id: [1],
-    roles_id: [1]
+
 
 
 
@@ -144,6 +177,8 @@ def swagger_definitions do
   end,
 
     viewroles: swagger_schema do
+
+
       title "roles"
       description "All roles"
       properties do
@@ -221,6 +256,24 @@ end
 
 #  =====================================================
 
+
+#
+def login(conn,params) do
+  email=params["email"]
+  password=params["password"]
+
+
+case Data.Context.ViewUsers.login(email,password) do
+#
+    {:ok, user} ->
+      {:ok, token, _claims} = Api.Auth.Guardian.encode_and_sign(user)
+      IO.inspect(conn)
+      json(conn, %{token: token, user: %{id: user.id, name: user.name, email: user.email}})
+
+
+         {:error,msg} -> json(conn,%{message: "Invalid credentials"})
+end
+end
   def create_user(conn,params) do
 
     user=params
@@ -293,6 +346,22 @@ end
 
 
 def view_users(conn,params) do
+    IO.inspect(Guardian.Plug.current_token(conn), label: "Token from header")
+    IO.inspect(Guardian.Plug.current_resource(conn), label: "Current user")
+  token = Guardian.Plug.current_token(conn)
+  current_user = Guardian.Plug.current_resource(conn)
+
+  if token do
+    IO.inspect(token, label: "Token sent by client")
+  else
+    IO.puts("No token sent!")
+  end
+
+  if current_user do
+    IO.inspect(current_user, label: "Authenticated user")
+  else
+    IO.puts("User not authenticated")
+  end
 
 
     name=  params["name"]

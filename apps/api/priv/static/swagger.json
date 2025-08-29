@@ -7,6 +7,11 @@
           "User"
         ],
         "summary": "View list of users ",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "400": {
             "description": "Bad request"
@@ -194,6 +199,44 @@
         ]
       }
     },
+    "/api/login": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Logs in a user",
+        "responses": {
+          "400": {
+            "description": "Bad request"
+          },
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/login"
+            },
+            "description": "Success"
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "$ref": "#/definitions/login"
+            },
+            "required": true,
+            "name": "user",
+            "in": "body",
+            "description": "User logged in  successfully"
+          }
+        ],
+        "operationId": "ApiWeb.UserController.login",
+        "description": "A  user is logged in",
+        "consumes": [
+          "application/json"
+        ]
+      }
+    },
     "/api/business": {
       "get": {
         "tags": [
@@ -337,18 +380,30 @@
           "description": "Business ID"
         }
       },
-      "example": {
-        "roles_id": [
-          1
-        ],
-        "password": "password123",
-        "name": "Example",
-        "email": "Example@gmail.com",
-        "businesses_id": [
-          1
-        ]
-      },
       "description": " A user record"
+    },
+    "login": {
+      "type": "object",
+      "title": "Login User",
+      "required": [
+        "password",
+        "email"
+      ],
+      "properties": {
+        "password": {
+          "type": "string",
+          "description": "Password"
+        },
+        "email": {
+          "type": "string",
+          "description": "Email"
+        }
+      },
+      "example": {
+        "password": "password123",
+        "email": "Example@gmail.com"
+      },
+      "description": " A user logs in "
     },
     "deleteuser": {
       "type": "object",
@@ -366,6 +421,11 @@
         "id": 1
       },
       "description": "Delete a user by id"
+    },
+    "Bearer": {
+      "type": "http",
+      "scheme": "bearer",
+      "bearerFormat": "JWT"
     }
   }
 }

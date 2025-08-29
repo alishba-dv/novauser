@@ -8,6 +8,30 @@ defmodule Data.Context.ViewUsers do
   use Scrivener, page_size: 5
 
 
+
+  def login(email,password) do
+
+    query= from u in User, where: u.email==^email and u.password==^password
+    case Repo.one(query) do
+
+      user -> {:ok,user}
+      nil ->{:error,"User not found. Invalid credentials"}
+    end
+
+  end
+  def get_user(id)   do
+
+    case  Repo.get!(User,id) do
+      nil -> {:error, "No user found"}
+      user ->{:ok,user}
+    end
+  end
+
+  def get_user(nil) do
+    {:error, "User id not provided"}
+  end
+
+
   def viewusers(name \\nil, email \\nil, order \\nil, businesses_id \\nil, roles_id \\nil ,page_size \\ nil,page \\nil) do
 
     filter=

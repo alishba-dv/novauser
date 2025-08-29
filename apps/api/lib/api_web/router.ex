@@ -15,6 +15,13 @@ defmodule ApiWeb.Router do
     plug :accepts, ["json"]
   end
 
+
+  pipeline :auth do
+
+    plug Api.Auth.Pipeline
+
+  end
+
   scope "/", ApiWeb do
     pipe_through :browser
 
@@ -26,9 +33,10 @@ defmodule ApiWeb.Router do
   #   pipe_through :api
   # end
 
+#routes which donto need authenticatioin token
 
   scope "/api" do
-    pipe_through :api
+#    pipe_through [:api]
     # This serves the Swagger UI at /swagger
     forward "/docs", PhoenixSwagger.Plug.SwaggerUI,
             otp_app: :api,
@@ -37,12 +45,30 @@ defmodule ApiWeb.Router do
 
 
 
-   post "/user", ApiWeb.UserController, :create_user
-   get "/users", ApiWeb.UserController, :view_users
-   delete "/user/:id",ApiWeb.UserController, :delete_user
    get "/roles",ApiWeb.UserController, :get_roles
    get "/business", ApiWeb.UserController, :get_business
+
+   post "/login", ApiWeb.UserController, :login
   end
+
+
+#  routes which need authentication
+
+  scope "/api" do
+    pipe_through [:api,:auth]
+    # This serves the Swagger UI at /swagger
+    forward "/docs", PhoenixSwagger.Plug.SwaggerUI,
+            otp_app: :api,
+            swagger_file: "swagger.json"
+
+
+
+
+    post "/user", ApiWeb.UserController, :create_user
+    get "/users", ApiWeb.UserController, :view_users
+    delete "/user/:id",ApiWeb.UserController, :delete_user
+  end
+
 
 
 
