@@ -1,5 +1,16 @@
 {
   "swagger": "2.0",
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "JWT auth using Bearer scheme. Example: 'Bearer <token>'"
+    }
+  },
+  "schemes": [
+    "http"
+  ],
   "paths": {
     "/api/users": {
       "get": {
@@ -103,6 +114,11 @@
           "User"
         ],
         "summary": "Delete a user by its id",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "404": {
             "description": "Bad request"
@@ -139,6 +155,11 @@
           "User"
         ],
         "summary": "Create a new user",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "400": {
             "description": "Bad request"
@@ -177,6 +198,11 @@
           "User"
         ],
         "summary": "Get a list of all roles enrolled",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "404": {
             "description": "Bad Request"
@@ -243,6 +269,11 @@
           "User"
         ],
         "summary": "Get a list of all businesses enrolled",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "404": {
             "description": "Bad Request"
@@ -267,8 +298,8 @@
     }
   },
   "info": {
-    "version": "0.0.1",
-    "title": "<enter your title>"
+    "version": "1.0",
+    "title": "UserNova Rest API"
   },
   "host": "localhost:4000",
   "definitions": {
@@ -421,11 +452,7 @@
         "id": 1
       },
       "description": "Delete a user by id"
-    },
-    "Bearer": {
-      "type": "http",
-      "scheme": "bearer",
-      "bearerFormat": "JWT"
     }
-  }
+  },
+  "basePath": "/"
 }

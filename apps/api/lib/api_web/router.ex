@@ -34,6 +34,21 @@ defmodule ApiWeb.Router do
   # end
 
 #routes which donto need authenticatioin token
+  def swagger_info do
+    %{
+      info: %{title: "UserNova Rest API", version: "1.0"},
+      basePath: "/",
+      schemes: ["http"],
+      securityDefinitions: %{
+        Bearer: %{
+          type: "apiKey",
+          name: "Authorization",
+          in: "header",
+          description: "JWT auth using Bearer scheme. Example: 'Bearer <token>'"
+        }
+      }
+    }
+  end
 
   scope "/api" do
 #    pipe_through [:api]

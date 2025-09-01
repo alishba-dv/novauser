@@ -5,7 +5,7 @@ defmodule Api.Auth.Pipeline do
       error_handler: Api.Auth.ErrorHandler
 
   # 1️⃣ Verify the token
-  plug Guardian.Plug.VerifyHeader, realm: "Bearer"
+  plug Guardian.Plug.VerifyHeader, scheme: "Bearer"
   # 2️⃣ Load the resource into `conn.assigns.current_user`
   plug Guardian.Plug.LoadResource
   # 3️⃣ Ensure the resource is present

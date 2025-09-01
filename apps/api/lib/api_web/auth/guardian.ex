@@ -2,6 +2,7 @@ defmodule Api.Auth.Guardian do
   use Guardian, otp_app: :api
 
   alias Data.Schema.User
+  alias Data.Repo
 
   def subject_for_token(%User{id: id}, _claims) do
     IO.puts(id)

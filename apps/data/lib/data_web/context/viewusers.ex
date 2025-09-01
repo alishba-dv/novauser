@@ -21,7 +21,7 @@ defmodule Data.Context.ViewUsers do
   end
   def get_user(id)   do
 
-    case  Repo.get!(User,id) do
+    case  Data.Repo.get(User,id) do
       nil -> {:error, "No user found"}
       user ->{:ok,user}
     end

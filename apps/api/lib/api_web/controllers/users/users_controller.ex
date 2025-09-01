@@ -36,6 +36,7 @@ swagger_path :create_user do
 
 
   post("/api/user")
+  security [%{Bearer: []}]
 
   summary("Create a new user")
   description("A new user is created")
@@ -80,6 +81,7 @@ page :query, :string, "Page number to show ", required: false
 end
 
 swagger_path :delete_user do
+    security [%{Bearer: []}]
 
   delete("/api/user/{id}")
   summary("Delete a user by its id")
@@ -97,6 +99,7 @@ end
 
 
 swagger_path :get_roles do
+    security [%{Bearer: []}]
 
   get("/api/roles")
   summary("Get a list of all roles enrolled")
@@ -112,6 +115,7 @@ swagger_path :get_roles do
 
   end
   swagger_path :get_business do
+    security [%{Bearer: []}]
 
     get("/api/business")
     summary("Get a list of all businesses enrolled")
@@ -126,20 +130,26 @@ swagger_path :get_roles do
 
 
   end
+
+
+
 def swagger_definitions do
 
-
+#
   %{
-Bearer: %{
-type: :http,
-scheme: :bearer,
-bearerFormat: "JWT"
-               },
+#Bearer: %{
+#type: :http,
+#scheme: :bearer,
+#bearerFormat: "JWT"
+#               },
+
+
     user: swagger_schema do
 
       title  "User"
       description " A user record"
-      properties do
+#  security [%{Bearer: []}]
+  properties do
 
         email :string, "Email", required: true
         name :string,  "Name", required: true
@@ -246,8 +256,8 @@ example %{
     end
 
 
-
   }
+
 
 
 
